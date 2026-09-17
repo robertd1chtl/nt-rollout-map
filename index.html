@@ -3,183 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>National Trust x Tap&Reuse — Rollout Plan</title>
+<title>National Trust x Tap&Reuse - Rollout Plan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
   :root {
-    --kh-cream: #F7F5F0;
-    --kh-white: #FFFFFF;
-    --kh-ink: #1A1814;
-    --kh-ink-2: #7A756C;
-    --kh-ink-3: #A8A299;
-    --kh-border: #E4E0D8;
-    --kh-border-strong: #D6D1C7;
-    --kh-indigo: #635BFF;
-    --kh-indigo-hover: #514AE0;
-    --kh-indigo-soft: #ECEBFF;
-    --kh-dark: #1A1814;
-    --font-mono: 'JetBrains Mono', monospace;
-    --font-sans: 'DM Sans', sans-serif;
+    --kh-cream:#F7F5F0; --kh-white:#FFFFFF; --kh-ink:#1A1814;
+    --kh-ink-2:#7A756C; --kh-ink-3:#A8A299;
+    --kh-border:#E4E0D8; --kh-border-strong:#D6D1C7;
+    --kh-indigo:#635BFF; --kh-indigo-soft:#ECEBFF;
+    --font-mono:'JetBrains Mono',monospace; --font-sans:'DM Sans',sans-serif;
   }
-  body { font-family: var(--font-sans); background: var(--kh-cream); color: var(--kh-ink); }
-  #map { height: 100vh; width: 100%; }
-
+  body { font-family:var(--font-sans); background:var(--kh-cream); color:var(--kh-ink); }
+  #map { height:100vh; width:100%; }
   .panel {
-    position: absolute; top: 12px; right: 12px; z-index: 1000;
-    background: rgba(255,255,255,0.97); border-radius: 12px;
-    padding: 20px 22px; width: 310px;
-    border: 0.5px solid var(--kh-border);
-    box-shadow: 0 4px 16px rgba(26,24,20,0.06);
-    max-height: calc(100vh - 24px); overflow-y: auto;
+    position:absolute; top:12px; right:12px; z-index:1000;
+    background:rgba(255,255,255,0.97); border-radius:12px;
+    padding:20px 22px; width:310px;
+    border:0.5px solid var(--kh-border);
+    box-shadow:0 4px 16px rgba(26,24,20,0.06);
+    max-height:calc(100vh - 24px); overflow-y:auto;
   }
-  .panel::-webkit-scrollbar { width: 4px; }
-  .panel::-webkit-scrollbar-thumb { background: var(--kh-border); border-radius: 2px; }
-
+  .panel::-webkit-scrollbar { width:4px; }
+  .panel::-webkit-scrollbar-thumb { background:var(--kh-border); border-radius:2px; }
   .panel-eyebrow {
-    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--kh-ink-2); margin-bottom: 6px;
+    font-family:var(--font-mono); font-size:11px; font-weight:500;
+    letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--kh-ink-2); margin-bottom:6px;
   }
   .panel-title {
-    font-family: var(--font-mono); font-size: 18px; font-weight: 600;
-    letter-spacing: -0.02em; color: var(--kh-ink); margin-bottom: 4px;
+    font-family:var(--font-mono); font-size:18px; font-weight:600;
+    letter-spacing:-0.02em; margin-bottom:4px;
   }
-  .panel-sub {
-    font-size: 13px; color: var(--kh-ink-2); margin-bottom: 16px; line-height: 1.5;
-  }
-
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .panel-sub { font-size:13px; color:var(--kh-ink-2); margin-bottom:16px; line-height:1.5; }
+  .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
   .stat-card {
-    background: var(--kh-cream); border-radius: 8px; padding: 10px 12px;
-    border: 0.5px solid var(--kh-border);
+    background:var(--kh-cream); border-radius:8px; padding:10px 12px;
+    border:0.5px solid var(--kh-border);
   }
-  .stat-card.highlight {
-    background: var(--kh-indigo-soft); border-color: var(--kh-indigo);
-  }
+  .stat-card.highlight { background:var(--kh-indigo-soft); border-color:var(--kh-indigo); }
   .stat-value {
-    font-family: var(--font-mono); font-size: 20px; font-weight: 600;
-    color: var(--kh-ink); letter-spacing: -0.02em;
+    font-family:var(--font-mono); font-size:20px; font-weight:600; letter-spacing:-0.02em;
   }
-  .stat-card.highlight .stat-value { color: var(--kh-indigo); }
-  .stat-label { font-size: 11px; color: var(--kh-ink-2); margin-top: 2px; }
-
+  .stat-card.highlight .stat-value { color:var(--kh-indigo); }
+  .stat-label { font-size:11px; color:var(--kh-ink-2); margin-top:2px; }
   .group-toggle {
-    display: flex; gap: 6px; margin-bottom: 14px;
-    background: var(--kh-cream); border-radius: 8px; padding: 3px;
-    border: 0.5px solid var(--kh-border);
+    display:flex; gap:6px; margin-bottom:14px;
+    background:var(--kh-cream); border-radius:8px; padding:3px;
+    border:0.5px solid var(--kh-border);
   }
   .group-btn {
-    flex: 1; padding: 7px 8px; border: none; border-radius: 6px;
-    font-family: var(--font-sans); font-size: 12px; font-weight: 500;
-    cursor: pointer; transition: all 0.2s; background: transparent;
-    color: var(--kh-ink-2);
+    flex:1; padding:7px 8px; border:none; border-radius:6px;
+    font-family:var(--font-sans); font-size:12px; font-weight:500;
+    cursor:pointer; transition:all 0.2s; background:transparent; color:var(--kh-ink-2);
   }
-  .group-btn.active { background: #fff; color: var(--kh-ink); box-shadow: 0 1px 3px rgba(26,24,20,0.08); }
-  .group-btn:hover:not(.active) { color: var(--kh-ink); }
-
-  .divider { border-top: 0.5px solid var(--kh-border); margin: 12px 0; }
-
+  .group-btn.active { background:#fff; color:var(--kh-ink); box-shadow:0 1px 3px rgba(26,24,20,0.08); }
+  .group-btn:hover:not(.active) { color:var(--kh-ink); }
+  .divider { border-top:0.5px solid var(--kh-border); margin:12px 0; }
   .section-header {
-    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--kh-ink-2); margin: 10px 0 6px;
+    font-family:var(--font-mono); font-size:11px; font-weight:500;
+    letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--kh-ink-2); margin:10px 0 8px;
   }
-
-  .wave-row {
-    display: flex; align-items: center; padding: 5px 6px; font-size: 12px;
-    cursor: pointer; border-radius: 6px; margin: 0 -6px;
-    transition: background 0.15s;
+  .site-row {
+    display:flex; align-items:baseline; justify-content:space-between;
+    font-size:11.5px; line-height:1.9; color:var(--kh-ink);
+    cursor:pointer; padding:0 6px; margin:0 -6px; border-radius:4px;
   }
-  .wave-row:hover { background: var(--kh-cream); }
-  .wave-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
-  .wave-name { flex: 1; color: var(--kh-ink); font-weight: 500; }
-  .wave-meta { color: var(--kh-ink-3); font-size: 11px; font-family: var(--font-mono); }
-  .wave-window { font-size: 10px; color: var(--kh-ink-3); margin-left: 18px; margin-top: 1px; margin-bottom: 4px; }
-
-  .g2-summary {
-    display: flex; align-items: center; padding: 5px 6px; font-size: 12px;
-    border-radius: 6px; margin: 0 -6px;
+  .site-row:hover { background:var(--kh-cream); }
+  .site-row .ctrs { font-family:var(--font-mono); font-size:10px; color:var(--kh-ink-3); }
+  .site-row.pending { color:var(--kh-ink-3); font-style:italic; }
+  .legend-row {
+    display:flex; align-items:center; font-size:11.5px;
+    color:var(--kh-ink-2); padding:3px 0;
   }
-  .g2-summary .wave-dot { background: var(--kh-border-strong); }
-
-  .site-list {
-    margin-left: 18px; margin-bottom: 6px;
-  }
-  .site-list-item {
-    font-size: 11px; color: var(--kh-ink-2); line-height: 1.6;
-    display: flex; justify-content: space-between;
-  }
-  .site-list-item .ctrs {
-    font-family: var(--font-mono); font-size: 10px; color: var(--kh-ink-3);
-  }
-
+  .legend-dot { width:10px; height:10px; border-radius:50%; margin-right:8px; flex-shrink:0; }
   .disclaimer {
-    font-size: 10px; color: var(--kh-ink-3); margin-top: 14px; line-height: 1.5;
-    padding: 8px 10px; border-radius: 6px;
-    background: var(--kh-cream); border: 0.5px solid var(--kh-border);
+    font-size:10px; color:var(--kh-ink-3); margin-top:14px; line-height:1.5;
+    padding:8px 10px; border-radius:6px;
+    background:var(--kh-cream); border:0.5px solid var(--kh-border);
   }
-
-  .footer-note {
-    font-size: 10px; color: var(--kh-ink-3); margin-top: 10px; line-height: 1.4;
-    font-family: var(--font-mono);
-  }
-
-  /* Popup styling */
+  .footer-note { font-size:10px; color:var(--kh-ink-3); margin-top:10px; font-family:var(--font-mono); }
   .leaflet-popup-content-wrapper {
-    border-radius: 10px !important; border: 0.5px solid var(--kh-border) !important;
-    box-shadow: 0 4px 16px rgba(26,24,20,0.1) !important;
-    font-family: var(--font-sans);
+    border-radius:10px !important; border:0.5px solid var(--kh-border) !important;
+    box-shadow:0 4px 16px rgba(26,24,20,0.1) !important; font-family:var(--font-sans);
   }
-  .leaflet-popup-content { margin: 14px 16px !important; }
+  .leaflet-popup-content { margin:14px 16px !important; }
   .popup-eyebrow {
-    font-family: var(--font-mono); font-size: 10px; font-weight: 500;
-    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px;
+    font-family:var(--font-mono); font-size:10px; font-weight:500;
+    letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px;
   }
   .popup-title {
-    font-family: var(--font-mono); font-weight: 600; font-size: 15px;
-    color: var(--kh-ink); margin-bottom: 6px; letter-spacing: -0.02em;
+    font-family:var(--font-mono); font-weight:600; font-size:15px;
+    margin-bottom:8px; letter-spacing:-0.02em;
   }
-  .popup-badge {
-    display: inline-block; padding: 2px 8px; border-radius: 999px;
-    font-size: 10px; font-weight: 600; color: white; margin-bottom: 8px;
-    font-family: var(--font-mono);
-  }
-  .popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
-  .popup-item { font-size: 12px; }
-  .popup-label { color: var(--kh-ink-3); font-size: 11px; }
-  .popup-val { color: var(--kh-ink); font-weight: 500; }
+  .popup-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px 16px; }
+  .popup-item { font-size:12px; }
+  .popup-label { color:var(--kh-ink-3); font-size:11px; }
+  .popup-val { color:var(--kh-ink); font-weight:500; }
   .popup-addr {
-    font-size: 11px; color: var(--kh-ink-3); margin-top: 6px;
-    border-top: 0.5px solid var(--kh-border); padding-top: 6px;
+    font-size:11px; color:var(--kh-ink-3); margin-top:6px;
+    border-top:0.5px solid var(--kh-border); padding-top:6px;
   }
-
-  .leaflet-control-zoom a { border-radius: 6px !important; }
+  .leaflet-control-zoom a { border-radius:6px !important; }
 </style>
 </head>
 <body>
 <div id="map"></div>
-
 <div class="panel">
   <div class="panel-eyebrow">Rollout plan</div>
   <div class="panel-title">National Trust x Tap&Reuse</div>
-  <div class="panel-sub">61 properties, 200 counters, 4.93m single-use cups per year</div>
+  <div class="panel-sub">62 properties, 200 counters, 4.93m single-use cups per year</div>
 
   <div class="stat-grid">
     <div class="stat-card highlight">
-      <div class="stat-value">13</div>
-      <div class="stat-label">December 2026</div>
+      <div class="stat-value">20</div>
+      <div class="stat-label">November 2026</div>
     </div>
     <div class="stat-card highlight">
-      <div class="stat-value">49%</div>
+      <div class="stat-value">31%</div>
       <div class="stat-label">Cup volume live in 2026</div>
     </div>
     <div class="stat-card">
-      <div class="stat-value">48</div>
+      <div class="stat-value">42</div>
       <div class="stat-label">Q1 2027</div>
     </div>
     <div class="stat-card">
@@ -189,261 +139,111 @@
   </div>
 
   <div class="group-toggle">
-    <button class="group-btn active" onclick="showGroup('all', this)">All</button>
-    <button class="group-btn" onclick="showGroup('dec2026', this)">December 2026</button>
-    <button class="group-btn" onclick="showGroup('q12027', this)">Q1 2027</button>
+    <button class="group-btn active" onclick="showGroup('all',this)">All</button>
+    <button class="group-btn" onclick="showGroup('nov2026',this)">November</button>
+    <button class="group-btn" onclick="showGroup('q12027',this)">Q1 2027</button>
   </div>
 
   <div class="divider"></div>
   <div id="groupList"></div>
 
   <div class="disclaimer">
-    Indicative. Subject to signed agreement and Gate 2 approval. Dates assume signature 15 September 2026.
+    Indicative. Subject to signed agreement and Gate 2 approval. November sites are those with network approval already in place.
   </div>
-
-  <div class="footer-note">
-    Kleen Hub
-  </div>
+  <div class="footer-note">Kleen Hub</div>
 </div>
 
 <script>
-var map = L.map('map', { center: [53.0, -1.5], zoom: 6, zoomControl: true });
-
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CARTO',
-  subdomains: 'abcd', maxZoom: 19
+var map = L.map('map',{center:[53.0,-1.5],zoom:6,zoomControl:true});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19
 }).addTo(map);
 
-var sites = [
-  {"name":"Attingham Park","region":"West Midlands","est_sucs":119200,"counters":3,"lat":52.6862,"lon":-2.6644,"address":"Shrewsbury SY4 4TP","group":"dec2026","wave":1,"wave_window":"30 Nov to 4 Dec"},
-  {"name":"Clumber Park","region":"East Midlands","est_sucs":343720,"counters":11,"lat":53.065,"lon":-1.775,"address":null,"group":"dec2026","wave":1,"wave_window":"30 Nov to 4 Dec"},
-  {"name":"Belton House","region":"East Midlands","est_sucs":265200,"counters":5,"lat":52.93,"lon":-0.57,"address":"High Rd, Belton, Grantham NG32 2LW","group":"dec2026","wave":1,"wave_window":"30 Nov to 4 Dec"},
-  {"name":"Calke Abbey","region":"East Midlands","est_sucs":249600,"counters":5,"lat":52.7944,"lon":-1.4531,"address":"Ticknall, Derby DE73 7JF","group":"dec2026","wave":1,"wave_window":"30 Nov to 4 Dec"},
-  {"name":"Dunham Massey","region":"North","est_sucs":175933,"counters":4,"lat":53.3833,"lon":-2.3832,"address":"Altrincham WA14 4SJ","group":"dec2026","wave":2,"wave_window":"7 to 11 Dec"},
-  {"name":"Sizergh","region":"North","est_sucs":148200,"counters":3,"lat":54.3036,"lon":-2.7766,"address":"Kendal LA8 8DZ","group":"dec2026","wave":2,"wave_window":"7 to 11 Dec"},
-  {"name":"Beningbrough Hall","region":"North","est_sucs":132600,"counters":3,"lat":54.0571,"lon":-1.187,"address":"York YO30 1DD","group":"dec2026","wave":2,"wave_window":"7 to 11 Dec"},
-  {"name":"Purbeck","region":"South West","est_sucs":244400,"counters":3,"lat":50.65,"lon":-1.94,"address":"Swanage BH19 3AN","group":"dec2026","wave":3,"wave_window":"14 to 18 Dec"},
-  {"name":"Anglesey Abbey","region":"East of England","est_sucs":182000,"counters":6,"lat":52.2337,"lon":0.2322,"address":"Quy Rd, Lode, Cambridge CB25 9EJ","group":"dec2026","wave":3,"wave_window":"14 to 18 Dec"},
-  {"name":"Box Hill","region":"London & South East","est_sucs":145600,"counters":3,"lat":51.2525,"lon":-0.3123,"address":"Box Hill Road, Tadworth, Surrey KT20 7LB","group":"dec2026","wave":3,"wave_window":"14 to 18 Dec"},
-  {"name":"Wimpole","region":"East of England","est_sucs":142701,"counters":3,"lat":52.1336,"lon":-0.0403,"address":"Arrington, Royston, Cambridgeshire SG8 0BW","group":"dec2026","wave":3,"wave_window":"14 to 18 Dec"},
-  {"name":"Cliveden","region":"London & South East","est_sucs":129000,"counters":5,"lat":51.5575,"lon":-0.6945,"address":"Taplow, Maidenhead SL1 8NS","group":"dec2026","wave":3,"wave_window":"14 to 18 Dec"},
-  {"name":"Mottisfont","region":"London & South East","est_sucs":126300,"counters":4,"lat":51.0418,"lon":-1.5363,"address":"Romsey SO51 0LP","group":"dec2026","wave":3,"wave_window":"14 to 18 Dec"},
-  {"name":"Kedleston","region":"East Midlands","est_sucs":69333,"counters":4,"lat":52.9538,"lon":-1.5869,"address":"Derby DE22 5JH","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Sudbury Hall","region":"East Midlands","est_sucs":70200,"counters":3,"lat":52.87,"lon":-1.67,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Quarry Bank","region":"North","est_sucs":78000,"counters":4,"lat":53.3478,"lon":-2.2369,"address":"Styal, Wilmslow SK9 4HP","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Lyme","region":"North","est_sucs":117000,"counters":2,"lat":53.3379,"lon":-2.0529,"address":"Disley, Stockport SK12 2NR","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Bodnant Garden","region":"Wales","est_sucs":70700,"counters":4,"lat":53.2287,"lon":-3.8035,"address":"Colwyn Bay LL28 5RE","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Fountains Abbey Estate","region":"North","est_sucs":82600,"counters":4,"lat":54.1126,"lon":-1.5831,"address":"Ripon, North Yorkshire HG4 3DY","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Polesden Lacey","region":"London & South East","est_sucs":65500,"counters":4,"lat":51.2615,"lon":-0.3556,"address":"Great Bookham, Surrey RH5 6BD","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Hindhead","region":"London & South East","est_sucs":78000,"counters":3,"lat":51.1142,"lon":-0.7289,"address":"Hindhead GU26 6AB","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Sissinghurst","region":"London & South East","est_sucs":75800,"counters":3,"lat":51.1156,"lon":0.5832,"address":"Cranbrook, Kent TN17 2AB","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Ickworth","region":"East of England","est_sucs":76900,"counters":5,"lat":52.2472,"lon":0.7603,"address":"Bury St Edmunds, Suffolk IP29 5QE","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Sheringham","region":"East of England","est_sucs":81467,"counters":2,"lat":52.92,"lon":1.15,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Kingston Lacy","region":"South West","est_sucs":104000,"counters":3,"lat":50.7949,"lon":-2.0257,"address":"Wimborne BH21 4EA","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Tyntesfield","region":"South West","est_sucs":99100,"counters":3,"lat":51.404,"lon":-2.7313,"address":"Bristol BS48 1NT","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Cragside","region":"North","est_sucs":56242,"counters":3,"lat":55.3126,"lon":-1.8764,"address":"Rothbury, Morpeth NE65 7PX","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Wallington","region":"North","est_sucs":48117,"counters":5,"lat":55.1542,"lon":-1.9475,"address":"Morpeth NE61 4AR","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Gibside","region":"North","est_sucs":53700,"counters":5,"lat":54.91,"lon":-1.73,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Brimham","region":"North","est_sucs":55500,"counters":2,"lat":54.0831,"lon":-1.6799,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Nostell","region":"North","est_sucs":52000,"counters":4,"lat":53.6297,"lon":-1.3456,"address":"Wakefield WF4 1QE","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Hardcastle Crags","region":"North","est_sucs":36800,"counters":3,"lat":53.7692,"lon":-2.043,"address":"Hebden Bridge HX7 7AP","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Aira Force","region":"North","est_sucs":26000,"counters":2,"lat":54.5744,"lon":-2.9267,"address":"Penrith CA11 0JS","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Knole","region":"London & South East","est_sucs":60000,"counters":2,"lat":51.2587,"lon":0.1942,"address":"Sevenoaks, Kent TN13 1HX","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Sheffield Park","region":"London & South East","est_sucs":55000,"counters":3,"lat":51.0022,"lon":0.0169,"address":"Uckfield, East Sussex TN22 3QX","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Chartwell","region":"London & South East","est_sucs":41500,"counters":3,"lat":51.2478,"lon":0.0316,"address":"Edenbridge, Kent TN8 6TB","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Emmetts","region":"London & South East","est_sucs":44500,"counters":2,"lat":51.236,"lon":0.069,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Hatchlands","region":"London & South East","est_sucs":45000,"counters":3,"lat":51.2495,"lon":-0.426,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"South Down East","region":"London & South East","est_sucs":54500,"counters":2,"lat":50.74,"lon":0.2,"address":"Eastbourne BN20 0AB","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Osterley","region":"London & South East","est_sucs":32400,"counters":3,"lat":51.4817,"lon":-0.3548,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Morden","region":"London & South East","est_sucs":19000,"counters":2,"lat":51.399,"lon":-0.1849,"address":"Morden, London SM4 5JD","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Runnymede","region":"London & South East","est_sucs":28000,"counters":2,"lat":51.4445,"lon":-0.5654,"address":"Old Windsor, Egham TW20 0AE","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Hatfield","region":"East of England","est_sucs":61984,"counters":1,"lat":51.84,"lon":0.26,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Ashridge Estate","region":"East of England","est_sucs":57500,"counters":2,"lat":51.8076,"lon":-0.5937,"address":"Berkhamsted HP4 1LT","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Dunstable Downs","region":"East of England","est_sucs":57500,"counters":2,"lat":51.8634,"lon":-0.5374,"address":"Dunstable LU6 2GY","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Dudmaston","region":"West Midlands","est_sucs":57500,"counters":5,"lat":52.513,"lon":-2.3938,"address":"Bridgnorth WV15 6QN","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Hanbury","region":"West Midlands","est_sucs":53500,"counters":4,"lat":52.28,"lon":-2.0,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Charlecote","region":"West Midlands","est_sucs":31400,"counters":3,"lat":52.2153,"lon":-1.555,"address":"Warwick CV35 9ER","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Croome","region":"West Midlands","est_sucs":18200,"counters":1,"lat":52.11,"lon":-2.15,"address":"Worcester WR8 9DW","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Hardwick Hall","region":"East Midlands","est_sucs":38393,"counters":3,"lat":53.1683,"lon":-1.3147,"address":"Chesterfield S44 5RW","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Longshaw Estate","region":"East Midlands","est_sucs":25480,"counters":3,"lat":53.3,"lon":-1.6,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Erddig","region":"Wales","est_sucs":51900,"counters":3,"lat":53.0036,"lon":-3.007,"address":"Wrexham LL13 0YT","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Penrhyn","region":"Wales","est_sucs":29500,"counters":3,"lat":53.2175,"lon":-4.0947,"address":"Bangor LL57 4HT","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Dyffryn Gardens","region":"Wales","est_sucs":29500,"counters":3,"lat":51.4396,"lon":-3.3032,"address":"St Nicholas, Cardiff CF5 6SU","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Tredegar House","region":"Wales","est_sucs":25400,"counters":3,"lat":51.55,"lon":-3.02,"address":"Newport NP10 8YW","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Dinefwr","region":"Wales","est_sucs":20500,"counters":3,"lat":51.8667,"lon":-3.9833,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Stourhead","region":"South West","est_sucs":57500,"counters":2,"lat":51.1047,"lon":-2.3187,"address":"Warminster BA12 6QF","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Dunster","region":"South West","est_sucs":54000,"counters":4,"lat":51.1837,"lon":-3.4413,"address":null,"group":"q12027","wave":0,"wave_window":""},
-  {"name":"Lacock","region":"South West","est_sucs":19500,"counters":3,"lat":51.4143,"lon":-2.1214,"address":"Chippenham SN15 3TD","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Mount Stewart","region":"Northern Ireland","est_sucs":36500,"counters":2,"lat":54.5528,"lon":-5.6095,"address":"Newtownards BT22 2AD","group":"q12027","wave":0,"wave_window":""},
-  {"name":"Giants Causeway","region":"Northern Ireland","est_sucs":23400,"counters":2,"lat":55.2408,"lon":-6.5116,"address":"Bushmills BT57 8SU","group":"q12027","wave":0,"wave_window":""}
-];
+var sites = [{"name":"Attingham Park","region":"West Midlands","est_sucs":119200,"counters":3,"lat":52.6862,"lon":-2.6644,"address":"Shrewsbury SY4 4TP","group":"nov2026"},{"name":"Clumber Park","region":"East Midlands","est_sucs":343720,"counters":11,"lat":53.065,"lon":-1.775,"address":null,"group":"q12027"},{"name":"Belton House","region":"East Midlands","est_sucs":265200,"counters":5,"lat":52.93,"lon":-0.57,"address":"High Rd, Belton, Grantham NG32 2LW","group":"q12027"},{"name":"Calke Abbey","region":"East Midlands","est_sucs":249600,"counters":5,"lat":52.7944,"lon":-1.4531,"address":"Ticknall, Derby DE73 7JF","group":"nov2026"},{"name":"Kedleston","region":"East Midlands","est_sucs":69333,"counters":4,"lat":52.9538,"lon":-1.5869,"address":"Derby DE22 5JH","group":"q12027"},{"name":"Sudbury Hall","region":"East Midlands","est_sucs":70200,"counters":3,"lat":52.87,"lon":-1.67,"address":null,"group":"nov2026"},{"name":"Dunham Massey","region":"North","est_sucs":175933,"counters":4,"lat":53.3833,"lon":-2.3832,"address":"Altrincham WA14 4SJ","group":"nov2026"},{"name":"Quarry Bank","region":"North","est_sucs":78000,"counters":4,"lat":53.3478,"lon":-2.2369,"address":"Styal, Wilmslow SK9 4HP","group":"q12027"},{"name":"Lyme","region":"North","est_sucs":117000,"counters":2,"lat":53.3379,"lon":-2.0529,"address":"Disley, Stockport SK12 2NR","group":"q12027"},{"name":"Bodnant Garden","region":"Wales","est_sucs":70700,"counters":4,"lat":53.2287,"lon":-3.8035,"address":"Colwyn Bay LL28 5RE","group":"q12027"},{"name":"Sizergh","region":"North","est_sucs":148200,"counters":3,"lat":54.3036,"lon":-2.7766,"address":"Kendal LA8 8DZ","group":"q12027"},{"name":"Beningbrough Hall","region":"North","est_sucs":132600,"counters":3,"lat":54.0571,"lon":-1.187,"address":"York YO30 1DD","group":"q12027"},{"name":"Fountains Abbey Estate","region":"North","est_sucs":82600,"counters":4,"lat":54.1126,"lon":-1.5831,"address":"Ripon, North Yorkshire HG4 3DY","group":"nov2026"},{"name":"Cliveden","region":"London & South East","est_sucs":129000,"counters":5,"lat":51.5575,"lon":-0.6945,"address":"Taplow, Maidenhead SL1 8NS","group":"q12027"},{"name":"Box Hill","region":"London & South East","est_sucs":145600,"counters":3,"lat":51.2525,"lon":-0.3123,"address":"Box Hill Road, Tadworth, Surrey KT20 7LB","group":"nov2026"},{"name":"Polesden Lacey","region":"London & South East","est_sucs":65500,"counters":4,"lat":51.2615,"lon":-0.3556,"address":"Great Bookham, Surrey RH5 6BD","group":"q12027"},{"name":"Hindhead","region":"London & South East","est_sucs":78000,"counters":3,"lat":51.1142,"lon":-0.7289,"address":"Hindhead GU26 6AB","group":"nov2026"},{"name":"Mottisfont","region":"London & South East","est_sucs":126300,"counters":4,"lat":51.0418,"lon":-1.5363,"address":"Romsey SO51 0LP","group":"q12027"},{"name":"Sissinghurst","region":"London & South East","est_sucs":75800,"counters":3,"lat":51.1156,"lon":0.5832,"address":"Cranbrook, Kent TN17 2AB","group":"nov2026"},{"name":"Ickworth","region":"East of England","est_sucs":76900,"counters":5,"lat":52.2472,"lon":0.7603,"address":"Bury St Edmunds, Suffolk IP29 5QE","group":"nov2026"},{"name":"Anglesey Abbey","region":"East of England","est_sucs":182000,"counters":6,"lat":52.2337,"lon":0.2322,"address":"Quy Rd, Lode, Cambridge CB25 9EJ","group":"q12027"},{"name":"Wimpole","region":"East of England","est_sucs":142701,"counters":3,"lat":52.1336,"lon":-0.0403,"address":"Arrington, Royston, Cambridgeshire SG8 0BW","group":"nov2026"},{"name":"Sheringham","region":"East of England","est_sucs":81467,"counters":2,"lat":52.92,"lon":1.15,"address":null,"group":"q12027"},{"name":"Purbeck","region":"South West","est_sucs":244400,"counters":3,"lat":50.65,"lon":-1.94,"address":"Swanage BH19 3AN","group":"q12027"},{"name":"Kingston Lacy","region":"South West","est_sucs":104000,"counters":3,"lat":50.7949,"lon":-2.0257,"address":"Wimborne BH21 4EA","group":"q12027"},{"name":"Tyntesfield","region":"South West","est_sucs":99100,"counters":3,"lat":51.404,"lon":-2.7313,"address":"Bristol BS48 1NT","group":"q12027"},{"name":"Cragside","region":"North","est_sucs":56242,"counters":3,"lat":55.3126,"lon":-1.8764,"address":"Rothbury, Morpeth NE65 7PX","group":"q12027"},{"name":"Wallington","region":"North","est_sucs":48117,"counters":5,"lat":55.1542,"lon":-1.9475,"address":"Morpeth NE61 4AR","group":"q12027"},{"name":"Gibside","region":"North","est_sucs":53700,"counters":5,"lat":54.91,"lon":-1.73,"address":null,"group":"q12027"},{"name":"Brimham","region":"North","est_sucs":55500,"counters":2,"lat":54.0831,"lon":-1.6799,"address":null,"group":"q12027"},{"name":"Nostell","region":"North","est_sucs":52000,"counters":4,"lat":53.6297,"lon":-1.3456,"address":"Wakefield WF4 1QE","group":"q12027"},{"name":"Hardcastle Crags","region":"North","est_sucs":36800,"counters":3,"lat":53.7692,"lon":-2.043,"address":"Hebden Bridge HX7 7AP","group":"q12027"},{"name":"Aira Force","region":"North","est_sucs":26000,"counters":2,"lat":54.5744,"lon":-2.9267,"address":"Penrith CA11 0JS","group":"nov2026"},{"name":"Knole","region":"London & South East","est_sucs":60000,"counters":2,"lat":51.2587,"lon":0.1942,"address":"Sevenoaks, Kent TN13 1HX","group":"q12027"},{"name":"Sheffield Park","region":"London & South East","est_sucs":55000,"counters":3,"lat":51.0022,"lon":0.0169,"address":"Uckfield, East Sussex TN22 3QX","group":"q12027"},{"name":"Chartwell","region":"London & South East","est_sucs":41500,"counters":3,"lat":51.2478,"lon":0.0316,"address":"Edenbridge, Kent TN8 6TB","group":"q12027"},{"name":"Emmetts","region":"London & South East","est_sucs":44500,"counters":2,"lat":51.236,"lon":0.069,"address":null,"group":"q12027"},{"name":"Hatchlands","region":"London & South East","est_sucs":45000,"counters":3,"lat":51.2495,"lon":-0.426,"address":null,"group":"q12027"},{"name":"South Down East","region":"London & South East","est_sucs":54500,"counters":2,"lat":50.74,"lon":0.2,"address":"Eastbourne BN20 0AB","group":"q12027"},{"name":"Osterley","region":"London & South East","est_sucs":32400,"counters":3,"lat":51.4817,"lon":-0.3548,"address":null,"group":"q12027"},{"name":"Morden","region":"London & South East","est_sucs":19000,"counters":2,"lat":51.399,"lon":-0.1849,"address":"Morden, London SM4 5JD","group":"q12027"},{"name":"Runnymede","region":"London & South East","est_sucs":28000,"counters":2,"lat":51.4445,"lon":-0.5654,"address":"Old Windsor, Egham TW20 0AE","group":"q12027"},{"name":"Hatfield","region":"East of England","est_sucs":61984,"counters":1,"lat":51.84,"lon":0.26,"address":null,"group":"nov2026"},{"name":"Ashridge Estate","region":"East of England","est_sucs":57500,"counters":2,"lat":51.8076,"lon":-0.5937,"address":"Berkhamsted HP4 1LT","group":"q12027"},{"name":"Dunstable Downs","region":"East of England","est_sucs":57500,"counters":2,"lat":51.8634,"lon":-0.5374,"address":"Dunstable LU6 2GY","group":"q12027"},{"name":"Dudmaston","region":"West Midlands","est_sucs":57500,"counters":5,"lat":52.513,"lon":-2.3938,"address":"Bridgnorth WV15 6QN","group":"nov2026"},{"name":"Hanbury","region":"West Midlands","est_sucs":53500,"counters":4,"lat":52.28,"lon":-2.0,"address":null,"group":"q12027"},{"name":"Charlecote","region":"West Midlands","est_sucs":31400,"counters":3,"lat":52.2153,"lon":-1.555,"address":"Warwick CV35 9ER","group":"q12027"},{"name":"Croome","region":"West Midlands","est_sucs":18200,"counters":1,"lat":52.11,"lon":-2.15,"address":"Worcester WR8 9DW","group":"nov2026"},{"name":"Hardwick Hall","region":"East Midlands","est_sucs":38393,"counters":3,"lat":53.1683,"lon":-1.3147,"address":"Chesterfield S44 5RW","group":"nov2026"},{"name":"Longshaw Estate","region":"East Midlands","est_sucs":25480,"counters":3,"lat":53.3,"lon":-1.6,"address":null,"group":"nov2026"},{"name":"Erddig","region":"Wales","est_sucs":51900,"counters":3,"lat":53.0036,"lon":-3.007,"address":"Wrexham LL13 0YT","group":"q12027"},{"name":"Penrhyn","region":"Wales","est_sucs":29500,"counters":3,"lat":53.2175,"lon":-4.0947,"address":"Bangor LL57 4HT","group":"q12027"},{"name":"Dyffryn Gardens","region":"Wales","est_sucs":29500,"counters":3,"lat":51.4396,"lon":-3.3032,"address":"St Nicholas, Cardiff CF5 6SU","group":"q12027"},{"name":"Tredegar House","region":"Wales","est_sucs":25400,"counters":3,"lat":51.55,"lon":-3.02,"address":"Newport NP10 8YW","group":"nov2026"},{"name":"Dinefwr","region":"Wales","est_sucs":20500,"counters":3,"lat":51.8667,"lon":-3.9833,"address":null,"group":"q12027"},{"name":"Stourhead","region":"South West","est_sucs":57500,"counters":2,"lat":51.1047,"lon":-2.3187,"address":"Warminster BA12 6QF","group":"nov2026"},{"name":"Dunster","region":"South West","est_sucs":54000,"counters":4,"lat":51.1837,"lon":-3.4413,"address":null,"group":"q12027"},{"name":"Lacock","region":"South West","est_sucs":19500,"counters":3,"lat":51.4143,"lon":-2.1214,"address":"Chippenham SN15 3TD","group":"q12027"},{"name":"Mount Stewart","region":"Northern Ireland","est_sucs":36500,"counters":2,"lat":54.5528,"lon":-5.6095,"address":"Newtownards BT22 2AD","group":"q12027"},{"name":"Giants Causeway","region":"Northern Ireland","est_sucs":23400,"counters":2,"lat":55.2408,"lon":-6.5116,"address":"Bushmills BT57 8SU","group":"nov2026"},{"name":"Shugborough","region":"West Midlands","est_sucs":null,"counters":null,"lat":52.7936,"lon":-2.0056,"address":"Milford, Stafford ST17 0UP","group":"nov2026"}];
 
-// Wave colors: indigo palette for Dec 2026, muted for Q1 2027
-var INDIGO = '#635BFF';
-var INDIGO_MID = '#8B83FF';
-var INDIGO_LIGHT = '#A89FFF';
-var MUTED = '#C4BFB4';
+var INDIGO='#635BFF', MUTED='#C4BFB4';
+var novLayer=L.layerGroup(), q1Layer=L.layerGroup();
+var markerByName={};
 
-var waveColors = { 1: INDIGO, 2: INDIGO_MID, 3: INDIGO_LIGHT, 0: MUTED };
+sites.forEach(function(s){
+  var isNov = s.group==='nov2026';
+  var pending = (s.counters===null);
+  var radius = isNov ? Math.max(8,Math.min(16,(s.counters||3)*2.2))
+                     : Math.max(5,Math.min(10,s.counters*1.2));
 
-// Wave metadata for the panel
-var waveMeta = {
-  1: { label: 'Wave 1', sites: ['Clumber Park','Belton House','Calke Abbey','Attingham Park'], counters: 24, window: '30 Nov to 4 Dec' },
-  2: { label: 'Wave 2', sites: ['Dunham Massey','Sizergh','Beningbrough Hall'], counters: 10, window: '7 to 11 Dec' },
-  3: { label: 'Wave 3', sites: ['Purbeck','Anglesey Abbey','Box Hill','Wimpole','Cliveden','Mottisfont'], counters: 24, window: '14 to 18 Dec' }
-};
-
-// Create marker layers
-var decLayer = L.layerGroup();
-var q1Layer = L.layerGroup();
-
-sites.forEach(function(s) {
-  var isDec = s.group === 'dec2026';
-  var color = waveColors[s.wave] || MUTED;
-  var radius = isDec ? Math.max(8, Math.min(16, s.counters * 2.2)) : Math.max(5, Math.min(10, s.counters * 1.2));
-  var opacity = isDec ? 0.9 : 0.5;
-  var weight = isDec ? 2 : 1;
-
-  var marker = L.circleMarker([s.lat, s.lon], {
-    radius: radius,
-    fillColor: color,
-    color: isDec ? '#fff' : '#E4E0D8',
-    weight: weight,
-    opacity: 1,
-    fillOpacity: opacity
+  var marker = L.circleMarker([s.lat,s.lon],{
+    radius:radius,
+    fillColor: pending ? '#FFFFFF' : (isNov?INDIGO:MUTED),
+    color: isNov?INDIGO:'#E4E0D8',
+    weight: pending?2:(isNov?2:1),
+    opacity:1,
+    fillOpacity: pending?1:(isNov?0.9:0.5),
+    dashArray: pending?'3,3':null
   });
 
-  var sucs = s.est_sucs > 1000 ? (s.est_sucs / 1000).toFixed(0) + 'K' : s.est_sucs;
-  var groupLabel = isDec ? 'December 2026' : 'Q1 2027';
-  var eyebrowColor = isDec ? INDIGO : MUTED;
-  var badgeColor = isDec ? color : '#A8A299';
+  var groupLabel = isNov?'November 2026':'Q1 2027';
+  var cups = s.est_sucs ? (s.est_sucs>1000 ? (s.est_sucs/1000).toFixed(0)+'K' : s.est_sucs) : 'Confirming';
+  var ctrs = s.counters!==null ? s.counters : 'Confirming';
 
-  var popup = '<div class="popup-eyebrow" style="color:' + eyebrowColor + '">' + groupLabel + '</div>' +
-    '<div class="popup-title">' + s.name + '</div>' +
-    '<div class="popup-badge" style="background:' + badgeColor + '">' + groupLabel + '</div>' +
-    '<div class="popup-grid">' +
-    '<div class="popup-item"><span class="popup-label">Counters</span><br><span class="popup-val">' + s.counters + '</span></div>' +
-    '<div class="popup-item"><span class="popup-label">Region</span><br><span class="popup-val">' + s.region + '</span></div>' +
-    '<div class="popup-item"><span class="popup-label">Est. cups/yr</span><br><span class="popup-val">' + sucs + '</span></div>' +
-    '<div class="popup-item"><span class="popup-label">Group</span><br><span class="popup-val">' + groupLabel + '</span></div>' +
-    '</div>' +
-    (s.address ? '<div class="popup-addr">' + s.address + '</div>' : '');
+  marker.bindPopup(
+    '<div class="popup-eyebrow" style="color:'+(isNov?INDIGO:MUTED)+'">'+groupLabel+'</div>'+
+    '<div class="popup-title">'+s.name+'</div>'+
+    '<div class="popup-grid">'+
+    '<div class="popup-item"><span class="popup-label">Counters</span><br><span class="popup-val">'+ctrs+'</span></div>'+
+    '<div class="popup-item"><span class="popup-label">Region</span><br><span class="popup-val">'+s.region+'</span></div>'+
+    '<div class="popup-item"><span class="popup-label">Est. cups/yr</span><br><span class="popup-val">'+cups+'</span></div>'+
+    '<div class="popup-item"><span class="popup-label">Group</span><br><span class="popup-val">'+groupLabel+'</span></div>'+
+    '</div>'+
+    (s.address?'<div class="popup-addr">'+s.address+'</div>':'')
+  );
 
-  marker.bindPopup(popup);
-
-  if (isDec) {
-    decLayer.addLayer(marker);
-  } else {
-    q1Layer.addLayer(marker);
-  }
+  markerByName[s.name]=marker;
+  (isNov?novLayer:q1Layer).addLayer(marker);
 });
 
-decLayer.addTo(map);
-q1Layer.addTo(map);
+novLayer.addTo(map); q1Layer.addTo(map);
+map.fitBounds(sites.map(function(s){return [s.lat,s.lon];}),{padding:[40,320]});
 
-// Fit bounds
-var coords = sites.map(function(s) { return [s.lat, s.lon]; });
-map.fitBounds(coords, { padding: [40, 320] });
+function buildList(filter){
+  var el=document.getElementById('groupList'); el.innerHTML='';
 
-// Build group list in the panel
-function buildGroupList(filter) {
-  var el = document.getElementById('groupList');
-  el.innerHTML = '';
-
-  if (filter === 'all' || filter === 'dec2026') {
-    var hdr = document.createElement('div');
-    hdr.className = 'section-header';
-    hdr.textContent = 'December 2026  —  13 sites, 58 counters';
-    el.appendChild(hdr);
-
-    [1, 2, 3].forEach(function(wn) {
-      var wm = waveMeta[wn];
-      var color = waveColors[wn];
-
-      var row = document.createElement('div');
-      row.className = 'wave-row';
-      row.onclick = function() { zoomWave(wn); };
-      row.innerHTML =
-        '<span class="wave-dot" style="background:' + color + '"></span>' +
-        '<span class="wave-name">' + wm.label + '</span>' +
-        '<span class="wave-meta">' + wm.sites.length + ' / ' + wm.counters + '</span>';
-      el.appendChild(row);
-
-      var win = document.createElement('div');
-      win.className = 'wave-window';
-      win.textContent = wm.window;
-      el.appendChild(win);
-
-      var list = document.createElement('div');
-      list.className = 'site-list';
-      wm.sites.forEach(function(name) {
-        var s = sites.find(function(x) { return x.name === name; });
-        var item = document.createElement('div');
-        item.className = 'site-list-item';
-        item.innerHTML = '<span>' + name + '</span><span class="ctrs">' + (s ? s.counters : '') + '</span>';
-        list.appendChild(item);
+  if(filter==='all'||filter==='nov2026'){
+    var h=document.createElement('div'); h.className='section-header';
+    h.textContent='November 2026  -  20 sites, 58 counters';
+    el.appendChild(h);
+    sites.filter(function(s){return s.group==='nov2026';})
+      .sort(function(a,b){return (b.est_sucs||0)-(a.est_sucs||0);})
+      .forEach(function(s){
+        var r=document.createElement('div');
+        r.className='site-row'+(s.counters===null?' pending':'');
+        r.innerHTML='<span>'+s.name+'</span><span class="ctrs">'+(s.counters!==null?s.counters:'--')+'</span>';
+        r.onclick=function(){ map.setView([s.lat,s.lon],11); markerByName[s.name].openPopup(); };
+        el.appendChild(r);
       });
-      el.appendChild(list);
-    });
   }
 
-  if (filter === 'all') {
-    var div = document.createElement('div');
-    div.className = 'divider';
-    el.appendChild(div);
-  }
+  if(filter==='all'){ var d=document.createElement('div'); d.className='divider'; el.appendChild(d); }
 
-  if (filter === 'all' || filter === 'q12027') {
-    var hdr2 = document.createElement('div');
-    hdr2.className = 'section-header';
-    hdr2.textContent = 'Q1 2027  —  48 sites, 142 counters';
-    el.appendChild(hdr2);
-
-    var summary = document.createElement('div');
-    summary.className = 'g2-summary';
-    summary.innerHTML =
-      '<span class="wave-dot"></span>' +
-      '<span class="wave-name" style="color:var(--kh-ink-2)">Remaining estate</span>' +
-      '<span class="wave-meta">48 / 142</span>';
-    el.appendChild(summary);
+  if(filter==='all'||filter==='q12027'){
+    var h2=document.createElement('div'); h2.className='section-header';
+    h2.textContent='Q1 2027  -  42 sites, 142 counters';
+    el.appendChild(h2);
+    var lr=document.createElement('div'); lr.className='legend-row';
+    lr.innerHTML='<span class="legend-dot" style="background:'+MUTED+'"></span><span>Remaining estate</span>';
+    el.appendChild(lr);
   }
 }
+buildList('all');
 
-buildGroupList('all');
-
-function showGroup(group, btn) {
-  document.querySelectorAll('.group-btn').forEach(function(b) { b.classList.remove('active'); });
+function showGroup(g,btn){
+  document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-
-  if (group === 'all') {
-    map.addLayer(decLayer);
-    map.addLayer(q1Layer);
-  } else if (group === 'dec2026') {
-    map.addLayer(decLayer);
-    map.removeLayer(q1Layer);
-  } else {
-    map.removeLayer(decLayer);
-    map.addLayer(q1Layer);
-  }
-
-  buildGroupList(group);
-
-  // Refit bounds
-  var visCoords = [];
-  sites.forEach(function(s) {
-    if (group === 'all' || s.group === group) visCoords.push([s.lat, s.lon]);
-  });
-  if (visCoords.length) map.fitBounds(visCoords, { padding: [40, 320] });
-}
-
-function zoomWave(waveNum) {
-  var wCoords = [];
-  sites.forEach(function(s) {
-    if (s.wave === waveNum) wCoords.push([s.lat, s.lon]);
-  });
-  if (wCoords.length) {
-    map.fitBounds(wCoords, { padding: [60, 340], maxZoom: 10 });
-  }
+  if(g==='all'){ map.addLayer(novLayer); map.addLayer(q1Layer); }
+  else if(g==='nov2026'){ map.addLayer(novLayer); map.removeLayer(q1Layer); }
+  else { map.removeLayer(novLayer); map.addLayer(q1Layer); }
+  buildList(g);
+  var c=sites.filter(function(s){return g==='all'||s.group===g;}).map(function(s){return [s.lat,s.lon];});
+  if(c.length) map.fitBounds(c,{padding:[40,320]});
 }
 </script>
 </body>
